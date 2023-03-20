@@ -164,7 +164,7 @@ int	BitcoinExchange::doExchange(char *path)
 
 		fvalue = std::stof((std::string) temp->second) * std::atof(value);
 
-		if (fvalue > 1000)
+		if (std::atof(value) > 1000)
 		{
 			std::cout << RED "Error: bad input: too large number." BLANK << std::endl;
 			continue ;
