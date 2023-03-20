@@ -9,7 +9,7 @@ DATE	= 02/03/2023
 FILE_EXTENSION	= .cpp
 SRCS_PATH		= ./
 INCLUDE_PATH	= ./
-SRCS			= BitcoinExchange.cpp
+SRCS			= main.cpp
 MAIN			= main.cpp
 
 ################################################################################
