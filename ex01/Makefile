@@ -1,4 +1,4 @@
-NAME	= btc
+NAME	= RPN
 CC		= c++
 CFLAGS	= -Wall -Wextra -Werror -std=c++98
 CFLAGS = -std=c++98
@@ -9,7 +9,7 @@ DATE	= 02/03/2023
 FILE_EXTENSION	= .cpp
 SRCS_PATH		= ./
 INCLUDE_PATH	= ./
-SRCS			= main.cpp
+SRCS			=
 MAIN			= main.cpp
 
 ################################################################################

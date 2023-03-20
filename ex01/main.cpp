@@ -15,66 +15,86 @@ int calculate(int a, int b, const std::string &operation)
 	return -1;
 }
 
+bool isOp(char op)
+{
+	return op == '+' || op == '-' || op == '*' || op == '/';
+}
+
 bool isOperation(const std::string& op)
 {
 	return op == "+" || op == "-" || op == "*" || op == "/";
 }
 
-int RPN(std::vector<std::string> &notation) {
+int	RPN(std::vector<std::string> vec)
+{
+	std::stack<int>	numbers;
+	int				size = vec.size();
 
-	std::stack<int> numbers;
-	for (const auto& str : notation)
+	for (int i = 0; i < size; i++)
 	{
-		if (isOperation(str))
+		if (isOperation(vec[i]))
 		{
 			int n2 = numbers.top(); numbers.pop();
 			int n1 = numbers.top(); numbers.pop();
 
-			numbers.push(calculate(n1, n2, str));
+			numbers.push(calculate(n1, n2, vec[i]));
 		}
 		else
-			numbers.push(std::stoi(str));
-	}
-
-	return numbers.top();
-}
-
-std::vector<std::string> parse(const std::string& input)
-{
-	std::vector<std::string> vec;
-
-	std::string current;
-
-	for (char c : input)
-	{
-		if (isdigit(c))
-			current += c;
-		else if (c)
 		{
-			if (!current.empty())
+			try
 			{
-				vec.emplace_back(std::move(current));
-				current = "";
+				numbers.push(std::stoi(vec[i]));
 			}
-
-			if (c != ' ')
-				vec.emplace_back(1, c);
+			catch(std::exception &e)
+			{
+				throw std::exception();
+			}
 		}
 	}
-
-	if (!current.empty())
-		vec.push_back(std::move(current));
-
-	return vec;
+	return (numbers.top());
 }
 
-int main() {
+std::vector<std::string> parse(std::string input)
+{
+	int							size = input.length();
+	std::vector<std::string>	vec;
+	std::string					num;
 
-	// This program doesn't validate input.
-	// It assumes that the input is always correct.
+	for (int x = 0; x < size; x++)
+	{
+		if (std::isdigit(input[x]))
+		{
+			num += input[x];
+		}
+		else if (isOp(input[x]))
+		{
+			num += input[x];
+			vec.push_back(num);
+			num = "";
+		}
+		else if (input[x] == ' ')
+		{
+			if (num != "")
+				vec.push_back(num);
+			num = "";
+		}
+		else
+			throw std::exception();
+	}
+	return (vec);
+}
 
-	std::string input;
-	std::getline(std::cin, input);
-	std::vector<std::string> notation = parse(input);
-	std::cout << RPN(notation) << '\n';
+int main(int argc, char **argv)
+{
+	try
+	{
+		std::vector<std::string> notation = parse(argv[1]);
+		std::cout << RPN(notation) << std::endl;
+	}
+	catch(std::exception &e)
+	{
+		std::cerr << "Error: Bad input." << '\n';
+	}
+
+	return (0);
 }
