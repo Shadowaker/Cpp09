@@ -49,6 +49,18 @@ static std::string	freplace(std::string str, std::string src, std::string pst)
 	return (res);
 }
 
+static bool checkDigits(std::string str)
+{
+	int		size = str.length();
+
+	for (int x = 0; x < size; x++)
+	{
+		if ((str[x] < 48 || str[x] > 57) && str[x] != '.')
+			return (true);
+	}
+	return (false);
+}
+
 BitcoinExchange::BitcoinExchange()
 {
 	try
@@ -140,6 +152,12 @@ int	BitcoinExchange::doExchange(char *path)
 	char			date[100], value[100];
 	FILE			*f = fopen(path, "r");
 
+	if (!f)
+	{
+		std::cout << RED "Error: bad input: wrong path." BLANK << std::endl;
+		return (1);
+	}
+
 	i = fscanf(f, "%s | %s\n", date, value);
 	if (i != 2)
 	{
@@ -154,26 +172,32 @@ int	BitcoinExchange::doExchange(char *path)
 			std::cout << RED "Error: bad input." BLANK << std::endl;
 			continue ;
 		}
-		std::map<std::string, std::string>::iterator temp = this->_data.find(date);
 
+		if (checkDigits(value))
+		{
+			std::cout << RED "Error: bad input: value has digits" BLANK << std::endl;
+			continue ;
+		}
+
+		std::map<std::string, std::string>::iterator temp = this->_data.find(date);
 		if (temp == this->_data.end())
 		{
 			std::cout << RED "Error: bad input: date not found." BLANK << std::endl;
 			continue ;
 		}
 
-		fvalue = std::stof((std::string) temp->second) * std::atof(value);
-
 		if (std::atof(value) > 1000)
 		{
 			std::cout << RED "Error: bad input: too large number." BLANK << std::endl;
 			continue ;
 		}
-		else if (fvalue < 0)
+		else if (std::atof(value) < 0)
 		{
 			std::cout << RED "Error: bad input: negative number." BLANK << std::endl;
 			continue ;
 		}
+		fvalue = std::stof((std::string) temp->second) * std::atof(value);
+
 		std::cout << date << " => " << value << " = " << fvalue << std::endl;
 		memset(date, 0, 100);
 		memset(value, 0, 100);
